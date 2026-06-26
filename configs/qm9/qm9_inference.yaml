@@ -1,0 +1,70 @@
+task: qm9
+output: outputs/qm9/{algorithm}.jsonl
+
+data:
+  split: val
+
+model:
+  checkpoint:
+  model_name: model_data/qm9/mdlm_qm9/last
+  tokenizer_path: model_data/qm9/qm9-tokenizer
+  seq_len: 32
+  dtype: bf16
+
+verifier:
+  checkpoint: outputs/qm9/verifier/verifier.pt
+  vocab_size: 40
+  seq_len: 32
+  hidden_dim: 256
+  num_layers: 4
+  num_heads: 4
+  dropout: 0.1
+  output_activation: sigmoid
+
+generation:
+  max_new_tokens: 32
+  steps: 32
+  batch_size: 256
+  temperature: 1.0
+  state_rollout: false
+
+value_guidance:
+  length: 32
+  N: 16
+  L_f: 8
+  L_b: 32
+  K: 8
+  B: 1
+  chi: 1.0
+  lambda: 0.0
+  forward_selection: random
+  backward_selection: low_conf
+  leaf_backtrack: random
+  force_complete_at_end: false
+  temperature: 1.0
+  stop_on_eos: false
+  vgr_sampler: forward_only
+  vgb_sampler: original_like
+
+reward:
+  mode: quantile_indicator
+  threshold: 0.5614854131280362
+  threshold_source: explicit
+  quantile: 95.0
+  beta: 0.0
+  center: 0.5
+
+training:
+  verifier:
+    epochs: 100
+    batch_size: 512
+    lr: 0.0001
+    weight_decay: 0.0
+    hidden_dim: 256
+    num_layers: 4
+    num_heads: 4
+    dropout: 0.1
+    output_activation: sigmoid
+
+metrics:
+  verifier_cost: 0.037547892720306515

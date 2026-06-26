@@ -1,0 +1,10 @@
+defaults:
+  - letter_inference.yaml
+
+output: outputs/letter/base_rollout.pt
+
+data:
+  split: train
+
+generation:
+  state_rollout: true

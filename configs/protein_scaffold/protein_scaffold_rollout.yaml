@@ -1,0 +1,14 @@
+defaults:
+  - protein_scaffold_inference.yaml
+
+output: outputs/protein_scaffold/base_rollout.pt
+
+data:
+  split: screen
+
+generation:
+  state_rollout: true
+
+rollout:
+  num_rollouts: 10
+  snapshots_per_rollout: 3

@@ -1,0 +1,15 @@
+defaults:
+  - dyck_inference.yaml
+
+output: outputs/dyck/base_rollout.pt
+
+data:
+  split: train
+  count: 5000
+
+generation:
+  state_rollout: true
+
+rollout:
+  num_rollouts: -1
+  snapshots_per_rollout: 3

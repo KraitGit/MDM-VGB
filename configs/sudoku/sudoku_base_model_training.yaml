@@ -1,0 +1,28 @@
+defaults:
+  - sudoku_inference.yaml
+
+model:
+  checkpoint: model_data/sudoku/base_model/checkpoints/best.pt
+
+data:
+  base_model:
+    train_csv: data/sudoku/easy_sudokus_answer_train.csv
+    valid_csv: data/sudoku/hard_sudokus_valid.csv
+
+training:
+  base_model:
+    output_dir: model_data/sudoku/base_model
+    seed: 0
+    global_batch_size: 256
+    max_steps: 20000
+    save_every: 1000
+    log_every: 20
+    lr: 0.0003
+    weight_decay: 0.0
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-8
+    dropout: 0.1
+    ema: 0.9999
+    train_limit: 0
+    num_workers: 0

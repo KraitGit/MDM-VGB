@@ -1,0 +1,9 @@
+defaults:
+  - dyck_inference.yaml
+
+training:
+  data: outputs/dyck/base_rollout.pt
+  output_dir: outputs/dyck/verifier
+  verifier:
+    epochs: 10
+    global_batch_size: 256

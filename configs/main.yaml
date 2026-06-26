@@ -1,0 +1,27 @@
+seed: 0
+task: dyck
+
+logging:
+  level: INFO
+
+generation:
+  temperature: 1.0
+  state_rollout: false
+
+value_guidance:
+  N: 8
+  L_f: 8
+  L_b: 8
+  K: 8
+  B: 1
+  lambda: 0.0
+  chi: 1.0
+  forward_selection: high_conf
+  backward_selection: random
+  temperature: 1.0
+
+BoN:
+  N: 128
+
+metrics:
+  verifier_cost: 0.0

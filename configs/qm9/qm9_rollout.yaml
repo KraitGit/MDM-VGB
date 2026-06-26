@@ -1,0 +1,16 @@
+defaults:
+  - qm9_inference.yaml
+
+output: outputs/qm9/base_rollout.pt
+
+data:
+  split: train
+
+generation:
+  state_rollout: true
+  steps: 32
+  batch_size: 256
+
+rollout:
+  num_rollouts: -1
+  snapshots_per_rollout: 3

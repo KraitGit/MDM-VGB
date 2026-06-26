@@ -1,0 +1,17 @@
+defaults:
+  - dna_deepstarr_inference.yaml
+
+output: outputs/dna_deepstarr/base_rollout.pt
+
+data:
+  split: train
+  count: 5000
+
+generation:
+  state_rollout: true
+  batch_size: 128
+
+rollout:
+  num_rollouts: -1
+  snapshots_per_rollout: 4
+  val_frac: 0.1

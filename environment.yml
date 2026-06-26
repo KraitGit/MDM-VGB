@@ -1,0 +1,16 @@
+name: mdm-vgb
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - pyyaml
+  - rdkit
+  - tqdm
+  - pytorch
+  - pip:
+      - transformers
+      - datasets
+      - huggingface_hub

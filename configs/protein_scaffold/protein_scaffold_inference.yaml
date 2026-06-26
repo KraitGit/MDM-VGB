@@ -1,0 +1,72 @@
+task: protein_scaffold
+output: outputs/protein_scaffold/{algorithm}.jsonl
+
+data:
+  path: data/evodiff_scaffold/1ycr_official_13mer_tasks.jsonl
+  split: screen
+
+model:
+  checkpoint:
+  model_type: oa_dm_38M
+  mock_model: false
+
+verifier:
+  checkpoint: outputs/protein_scaffold/verifier/best.pt
+  hidden_dim: 256
+
+generation:
+  temperature: 1.0
+  state_rollout: false
+
+scoring:
+  cache_dir: data/evodiff_scaffold/score_cache
+  folded_dir: data/evodiff_scaffold/folded_pdbs
+  backend: omegafold
+  backend_version: omegafold_unknown|weights=model.pt:3181611124
+  weights_file: model_data/protein_scaffold/omegafold/model.pt
+  fold: true
+  inprocess: true
+
+value_guidance:
+  N: 8
+  L_f: 8
+  L_b: 8
+  K: all
+  B: 1
+  lambda: 0.05
+  chi: 1.0
+  gamma: 20.0
+  up_prob: 0.5
+  exact_leaf_value: true
+  exact_leaf_candidate_value: false
+  accept_leaf_without_exact: false
+  max_steps_scope: mutable
+  vgb_sampler: paper_state_value
+  vgb_momentum_sampler: paper_state_value
+  forward_selection: random
+  backward_selection: low_conf
+  temperature: 1.0
+  stop_on_eos: true
+
+value_guidance_overrides:
+  VGR:
+    L_f: 1
+    L_b: 1
+    K: all
+    lambda: 0.0
+    chi: 0.7
+    up_prob: 1.0
+    vgr_sampler: forward_only
+
+training:
+  verifier:
+    global_batch_size: 256
+    iterations: 1000
+    eval_every: 100
+    lr: 0.0001
+    target_field: reward_sigma4
+    target_mode: logtau
+    pooling: triple
+
+metrics:
+  verifier_cost: 0.0

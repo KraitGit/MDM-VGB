@@ -1,0 +1,6 @@
+defaults:
+  - protein_scaffold_inference.yaml
+
+training:
+  data: outputs/protein_scaffold/base_rollout.pt
+  output_dir: outputs/protein_scaffold/verifier

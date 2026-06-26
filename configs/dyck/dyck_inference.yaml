@@ -1,0 +1,52 @@
+task: dyck
+output: outputs/dyck/{algorithm}.jsonl
+
+data:
+  path: data/dyck/fixed_middle_corruptions_10k.jsonl
+  split: test
+  count: 10000
+
+model:
+  checkpoint: model_data/dyck/base_model/aoar_best.pkl
+  kind: aoar
+
+verifier:
+  checkpoint: outputs/dyck/verifier/best.pt
+  vocab_size: 8
+  mask_id: 6
+  max_length: 64
+  d_model: 256
+  num_layers: 4
+  num_heads: 4
+  dropout: 0.25
+
+generation:
+  max_new_tokens: 34
+  temperature: 1.0
+  state_rollout: false
+  stop_on_eos: false
+
+value_guidance:
+  length: 34
+  N: 8
+  L_f: 8
+  L_b: 8
+  K: 8
+  B: 1
+  lambda: 8
+  chi:
+  vgb_sampler: original_like
+  forward_selection: random
+  backward_selection: random
+  temperature: 1.0
+  stop_on_eos: false
+
+training:
+  verifier:
+    epochs: 1
+    batch_size: 64
+    lr: 0.0001
+    loss: mse
+
+metrics:
+  verifier_cost: 0.0

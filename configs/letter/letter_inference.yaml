@@ -1,0 +1,37 @@
+task: letter
+output: outputs/letter/{algorithm}.jsonl
+
+data:
+  split: test
+
+model:
+  checkpoint:
+  model_name: model_data/letter/Qwen3-0.6B-diffusion-mdlm-v0.1
+  dtype: bf16
+
+verifier:
+  checkpoint:
+
+generation:
+  max_new_tokens: 32
+  temperature: 1.0
+  state_rollout: false
+
+value_guidance:
+  length: 32
+  N: 8
+  L_f: 8
+  L_b: 8
+  K: 8
+  B: 1
+  chi:
+  forward_selection: high_conf
+  backward_selection: random
+  temperature: 1.0
+  stop_on_eos: false
+
+training:
+  verifier: {}
+
+metrics:
+  verifier_cost: 0.0
