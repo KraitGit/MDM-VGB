@@ -1,0 +1,19 @@
+task: dyck
+seed: 0
+
+logging:
+  level: INFO
+
+generation:
+  temperature: 1.0
+
+algorithms:
+  value_guidance:
+    N: 8
+    max_steps_multiplier: 8
+    L_f: 8
+    K: 8
+    forward_selection: high_conf
+    temperature: 1.0
+  BoN:
+    N: 8

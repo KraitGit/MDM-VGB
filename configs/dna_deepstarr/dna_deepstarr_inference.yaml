@@ -1,0 +1,52 @@
+task: dna_deepstarr
+output: outputs/dna_deepstarr/{algorithm}.jsonl
+
+data:
+  split: test
+  count: 100
+
+model:
+  model_id: model_data/dna_deepstarr/D3LM-from-nt
+  target_nt: 249
+  dtype: bf16
+  local_files_only: true
+
+verifier:
+  checkpoint: outputs/dna_deepstarr/verifier/best.pt
+
+generation:
+  max_new_tokens: 48
+  steps: 50
+  remasking: random
+  temperature: 1.0
+  top_p: 0.9
+  top_k: 0
+
+algorithms:
+  value_guidance:
+    length: 48
+    N: 8
+    max_steps_multiplier: 8
+    L_f: 8
+    K: 32
+    forward_selection: random
+    temperature: 1.0
+    stop_on_eos: false
+    backward:
+      L_b: 8
+      B: 1
+      lambda: 2.0
+      backward_selection: low_conf
+    momentum:
+      chi: 1.0
+    terminal:
+      candidate_value: learned
+      reject: backtrack
+
+reward:
+  thresholds_path: outputs/dna_deepstarr/base/thresholds.json
+  eta: 1.0
+  mode: tau
+
+oracle:
+  model_path: model_data/dna_deepstarr/deepstarr/DeepSTARR.model.h5

@@ -1,0 +1,20 @@
+defaults:
+  - qm9_inference.yaml
+
+training:
+  data: outputs/qm9/base_rollout.pt
+  output_dir: outputs/qm9/verifier
+  verifier:
+    vocab_size: 40
+    max_length: 32
+    epochs: 200
+    global_batch_size: 2048
+    lr: 0.0001
+    weight_decay: 0.0
+    seed: 1
+    hidden_dim: 256
+    num_layers: 4
+    num_heads: 4
+    dropout: 0.1
+    output_activation: sigmoid
+    shard_by_rank: true

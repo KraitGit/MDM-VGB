@@ -1,0 +1,32 @@
+defaults:
+  - dyck_inference.yaml
+
+data:
+  base_model:
+    train_path: data/dyck/base_dataset/train.pkl
+    dev_path: data/dyck/base_dataset/dev.pkl
+
+training:
+  base_model:
+    kind: aoar
+    output_dir: model_data/dyck/base_model
+    checkpoint_name: aoar_best.pkl
+    final_checkpoint_name: aoar_final.pkl
+    seed: 0
+    num_types: 2
+    type_probs: [0.2, 0.8]
+    max_depth: 12
+    length: 32
+    train_count: 300000
+    dev_count: 10000
+    hidden_dim: 512
+    num_layers: 6
+    num_heads: 8
+    global_batch_size: 32
+    lr: 0.0003
+    weight_decay: 0.1
+    warmup: 100
+    num_iters: 10000
+    validation_every_steps: 100
+    prefix_length: 16
+    mask_prob: 0.3

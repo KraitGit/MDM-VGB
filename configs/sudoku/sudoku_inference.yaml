@@ -1,0 +1,28 @@
+task: sudoku
+output: outputs/sudoku/{algorithm}.jsonl
+
+data:
+  split: test
+
+model:
+  checkpoint: model_data/sudoku/base_model/checkpoints/best.pt
+
+generation:
+  max_new_tokens: 89
+  temperature: 1.0
+
+algorithms:
+  value_guidance:
+    length: 89
+    N: 8
+    max_steps_multiplier: 8
+    L_f: 8
+    K: 8
+    forward_selection: high_conf
+    temperature: 1.0
+    stop_on_eos: true
+    backward:
+      L_b: 8
+      B: 1
+      lambda: 0.0
+      backward_selection: random

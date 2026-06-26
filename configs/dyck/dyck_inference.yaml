@@ -1,0 +1,36 @@
+task: dyck
+output: outputs/dyck/{algorithm}.jsonl
+
+data:
+  split: test
+  count: 10000
+
+model:
+  checkpoint: model_data/dyck/base_model/aoar_best.pkl
+  kind: aoar
+
+verifier:
+  checkpoint: outputs/dyck/verifier/best.pt
+
+generation:
+  max_new_tokens: 34
+  temperature: 1.0
+  stop_on_eos: false
+
+algorithms:
+  value_guidance:
+    length: 34
+    N: 8
+    max_steps_multiplier: 8
+    L_f: 8
+    K: 8
+    forward_selection: random
+    temperature: 1.0
+    stop_on_eos: false
+    backward:
+      L_b: 8
+      B: 1
+      lambda: 8
+      backward_selection: random
+    terminal:
+      reject: backtrack

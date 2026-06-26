@@ -1,0 +1,17 @@
+defaults:
+  - protein_scaffold_inference.yaml
+
+training:
+  data: outputs/protein_scaffold/base_rollout.pt
+  output_dir: outputs/protein_scaffold/verifier
+  verifier:
+    hidden_dim: 256
+    num_layers: 4
+    num_heads: 4
+    pooling: triple
+    global_batch_size: 256
+    iterations: 1000
+    eval_every: 100
+    lr: 0.0001
+    target_field: reward_sigma4
+    target_mode: logtau

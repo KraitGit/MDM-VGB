@@ -1,0 +1,22 @@
+{
+  "architectures": [
+    "UDLM"
+  ],
+  "auto_map": {
+    "AutoConfig": "configuration_udlm.UDLMConfig",
+    "AutoModelForMaskedLM": "modeling_udlm.UDLM"
+  },
+  "cfg": false,
+  "cfg_num_classes": -1,
+  "cond_dim": 128,
+  "dropout": 0.1,
+  "dtype": "float32",
+  "hidden_dim": 768,
+  "model_length": 32,
+  "model_type": "udlm",
+  "n_blocks": 12,
+  "n_heads": 12,
+  "time_conditioning": false,
+  "transformers_version": "4.57.0",
+  "vocab_size": 40
+}

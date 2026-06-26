@@ -1,0 +1,11 @@
+defaults:
+  - dna_deepstarr_inference.yaml
+
+training:
+  data: outputs/dna_deepstarr/base_rollout.pt
+  output_dir: outputs/dna_deepstarr/verifier
+  verifier:
+    max_length: 64
+    hidden_dim: 192
+    num_layers: 4
+    num_heads: 6

@@ -1,0 +1,47 @@
+task: qm9
+output: outputs/qm9/{algorithm}.jsonl
+
+data:
+  split: val
+
+model:
+  model_name: model_data/qm9/mdlm_qm9/last
+  tokenizer_path: model_data/qm9/qm9-tokenizer
+  max_length: 32
+  dtype: bf16
+
+verifier:
+  checkpoint: outputs/qm9/verifier/verifier.pt
+
+generation:
+  max_new_tokens: 32
+  steps: 32
+  batch_size: 256
+  temperature: 1.0
+
+algorithms:
+  value_guidance:
+    length: 32
+    N: 16
+    max_steps_multiplier: 16
+    L_f: 8
+    K: 8
+    forward_selection: random
+    temperature: 1.0
+    stop_on_eos: false
+    backward:
+      L_b: 32
+      B: 1
+      lambda: 0.0
+      backward_selection: low_conf
+    momentum:
+      chi: 1.0
+    terminal:
+      reject: backtrack
+      force_complete: false
+  BoN:
+    N: 16
+
+reward:
+  mode: quantile_indicator
+  threshold: 0.5614854131280362

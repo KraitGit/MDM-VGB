@@ -1,0 +1,20 @@
+name: mdm-vgb
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.10
+  - pip
+  - einops
+  - h5py
+  - numpy
+  - omegaconf
+  - pyyaml
+  - rdkit
+  - tqdm
+  - pytorch
+  - pip:
+      - transformers
+      - datasets
+      - evodiff
+      - huggingface_hub

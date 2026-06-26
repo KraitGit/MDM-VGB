@@ -1,0 +1,19 @@
+defaults:
+  - dyck_inference.yaml
+
+output: outputs/dyck/base_rollout.pt
+
+data:
+  split: train
+  count: 10000
+
+generation:
+  state_rollout: true
+  stop_on_eos: false
+
+rollout:
+  num_rollouts: -1
+  repair_prompt: "B((([(((([((("
+  lock_eos: true
+  snapshots_per_rollout: 21
+  val_frac: 0.1

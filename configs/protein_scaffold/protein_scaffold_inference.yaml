@@ -1,0 +1,54 @@
+task: protein_scaffold
+output: outputs/protein_scaffold/{algorithm}.jsonl
+seed: 2026
+
+data:
+  path: data/evodiff_scaffold/1ycr_official_13mer_tasks_paper100.jsonl
+  split: screen
+  count: 100
+
+model:
+  model_type: oa_dm_38M
+
+verifier:
+  checkpoint: outputs/protein_scaffold/verifier/best.pt
+
+generation:
+  temperature: 1.0
+
+algorithms:
+  value_guidance:
+    N: 16
+    max_steps_multiplier: 16
+    L_f: 8
+    K: all
+    forward_selection: random
+    temperature: 1.0
+    stop_on_eos: true
+    backward:
+      L_b: 8
+      B: 1
+      lambda: 0.05
+      backward_selection: low_conf
+    momentum:
+      chi: 1.0
+    state_value:
+      gamma: 20.0
+      up_prob: 0.5
+    terminal:
+      value: exact
+      candidate_value: learned
+      accept_without_exact: false
+      reject: backtrack
+      keep_best: true
+    budget:
+      unit: editable_tokens
+  BoN:
+    N: 16
+
+scoring:
+  cache_dir: outputs/protein_scaffold/paper_score_cache
+  backend: omegafold
+  backend_version: omegafold_unknown|weights=model.pt:3181611124
+  weights_file: model_data/protein_scaffold/omegafold/model.pt
+  fold: true

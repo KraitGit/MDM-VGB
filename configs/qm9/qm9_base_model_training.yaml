@@ -1,0 +1,29 @@
+defaults:
+  - qm9_inference.yaml
+
+data:
+  split: train
+  dataset_dir: data/qm9/dataset
+  cache_dir: data/qm9/cache
+
+training:
+  base_model:
+    model_kind: mdlm
+    init_from_scratch: true
+    model_source: src/tasks/qm9/mdlm_source
+    output_dir: model_data/qm9/mdlm_qm9
+    seed: 1
+    eval_split_size: 0.05
+    global_batch_size: 256
+    train_steps: 25000
+    save_every: 5000
+    log_every: 20
+    lr: 0.0003
+    min_lr: 0.000003
+    warmup_steps: 1000
+    weight_decay: 0.0
+    hidden_dim: 768
+    cond_dim: 128
+    num_layers: 12
+    num_heads: 12
+    dropout: 0.1

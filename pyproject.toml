@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mdm-vgb"
+version = "0.1.0"
+description = "Paper-code release for VGB for Masked Diffusion Model: Efficient Test-time Scaling for Reward Satisfaction and Sample Editing."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  {name = "Kijung Jeon"},
+]
+license = {text = "MIT"}
+dependencies = [
+  "numpy",
+  "pyyaml",
+  "datasets",
+  "einops",
+  "evodiff",
+  "h5py",
+  "huggingface_hub",
+  "omegaconf",
+  "rdkit",
+  "torch",
+  "transformers",
+  "tqdm",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["utils"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
