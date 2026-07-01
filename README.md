@@ -3,6 +3,8 @@
 Paper-code release for **VGB for Masked Diffusion Model: Efficient Test-time
 Scaling for Reward Satisfaction and Sample Editing**.
 
+Status: Bug-fix (Dyck / QM9) in progress (Jul 1. ~).
+
 ## Layout
 
 - `configs/main.yaml`: shared defaults using paper notation (`N`, `L_f`, `L_b`, `K`, `B`, `chi`).
