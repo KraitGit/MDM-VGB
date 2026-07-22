@@ -30,10 +30,6 @@ def build_config(dropout=0.1):
                 "dropout": dropout,
                 "tie_word_embeddings": False,
             },
-            "sampling": {
-                "steps": 51,
-                "num_initial_masks": 51,
-            },
         }
     )
 
@@ -132,24 +128,6 @@ class SudokuHarness:
 
     def logits(self, prompt, state):
         return self.logits_batch([prompt], [state])[0]
-
-    def generate(self, prompt, max_new_tokens=89, temperature=1.0):
-        del prompt
-        state = [self.mask_id for _ in range(int(max_new_tokens))]
-        for idx in range(9, min(len(state), 89), 10):
-            state[idx] = self.eol_id
-        while self.mask_id in state:
-            logits = self.logits("", state)
-            positions = [idx for idx, token in enumerate(state) if int(token) == self.mask_id]
-            pos = positions[0]
-            token_logits = logits[pos]
-            if temperature <= 0:
-                token = int(torch.argmax(token_logits).item())
-            else:
-                probs = torch.softmax(token_logits.float() / float(temperature), dim=-1)
-                token = int(torch.multinomial(probs, 1).item())
-            state[pos] = token
-        return self.decode_state(state)
 
 
 def load(device=None, checkpoint=None):

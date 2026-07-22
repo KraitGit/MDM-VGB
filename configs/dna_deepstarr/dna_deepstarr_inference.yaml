@@ -25,7 +25,6 @@ generation:
 algorithms:
   value_guidance:
     length: 48
-    N: 8
     max_steps_multiplier: 8
     L_f: 8
     K: 32

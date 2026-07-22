@@ -1,9 +1,9 @@
 ALGORITHMS = {"Base", "BoN", "VGR", "VGB", "VGB-Momentum"}
 VALUE_GUIDED_ALGORITHMS = {"BoN", "VGR", "VGB", "VGB-Momentum"}
+VGB_ALGORITHMS = {"VGB", "VGB-Momentum"}
 ALGORITHM_CONFIG_KEYS = {"BoN", "value_guidance"}
 VALUE_GUIDANCE_SECTION_KEYS = {"backward", "momentum", "state_value", "terminal", "budget"}
 VALUE_GUIDANCE_BASE_KEYS = {
-    "N",
     "L_f",
     "K",
     "filter_forward_tokens",
@@ -64,6 +64,37 @@ def _section(config, key):
 
 def value_guidance_section(config):
     return _section(_section(config, "algorithms"), "value_guidance")
+
+
+def apply_budget_overrides(config, algorithm, n=None, max_steps_multiplier=None):
+    if n is not None:
+        n = int(n)
+        if n <= 0:
+            raise ValueError("--N must be positive")
+    if max_steps_multiplier is not None:
+        max_steps_multiplier = int(max_steps_multiplier)
+        if max_steps_multiplier <= 0:
+            raise ValueError("--max-steps-multiplier must be positive")
+
+    if algorithm == "BoN":
+        if max_steps_multiplier is not None:
+            raise ValueError("--max-steps-multiplier is only supported for VGB and VGB-Momentum")
+        if n is not None:
+            _section(_section(config, "algorithms"), "BoN")["N"] = n
+        return
+
+    if algorithm in VGB_ALGORITHMS:
+        if n is not None and max_steps_multiplier is not None and n != max_steps_multiplier:
+            raise ValueError("--N and --max-steps-multiplier must match when both are provided")
+        multiplier = n if n is not None else max_steps_multiplier
+        if multiplier is not None:
+            value_guidance_section(config)["max_steps_multiplier"] = multiplier
+        return
+
+    if n is not None:
+        raise ValueError("--N is only supported for BoN, VGB, and VGB-Momentum")
+    if max_steps_multiplier is not None:
+        raise ValueError("--max-steps-multiplier is only supported for VGB and VGB-Momentum")
 
 
 def algorithm_slug(algorithm):
@@ -194,8 +225,6 @@ def value_guidance_config(config, algorithm):
     if algorithm == "VGR":
         _strip_vgr_unused_config(cfg)
     cfg["algorithm"] = algorithm
-    if algorithm != "VGR":
-        cfg.setdefault("N", 8)
     cfg.setdefault("L_f", 8)
     cfg.setdefault("K", 8)
     if algorithm != "VGR":

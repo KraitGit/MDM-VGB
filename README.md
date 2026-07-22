@@ -59,6 +59,10 @@ torchrun --standalone --nproc_per_node=2 inference.py --task dyck --algorithm VG
 Pass `--task <name>` to use another config folder.
 Set result paths in yaml with `output`. In inference configs, `{algorithm}` is
 expanded to names like `base`, `bon`, `vgb`, and `vgb_momentum`.
+For BoN, `--N` sets the number of sampled candidates. For VGB and
+VGB-Momentum, `--N` sets the maximum number of Markov steps to the sequence
+length times `N`; it is equivalent to `--max-steps-multiplier`. VGR does not
+use `--N`.
 
 For applicable tasks, pretrained models and datasets are downloaded through
 Hugging Face or external links. The included Sudoku data is from

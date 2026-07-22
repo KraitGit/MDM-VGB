@@ -9,7 +9,6 @@ generation:
 
 algorithms:
   value_guidance:
-    N: 8
     max_steps_multiplier: 8
     L_f: 8
     K: 8

@@ -9,6 +9,7 @@ from tqdm.auto import tqdm
 from algorithms.algorithm_utils import force_complete
 from algorithms.config import (
     ALGORITHMS,
+    apply_budget_overrides,
     algorithm_slug,
     value_guidance_config,
     value_guidance_section,
@@ -39,9 +40,9 @@ def parse_args():
     parser.add_argument("--algorithm", default="Base", choices=sorted(ALGORITHMS))
     parser.add_argument("--device", default=None)
     parser.add_argument("--count", type=int, default=None)
-    parser.add_argument("--N", type=int, default=None)
+    parser.add_argument("--N", type=int, default=None, help="BoN candidate count or VGB maximum Markov-step budget factor.")
     parser.add_argument("--K", default=None)
-    parser.add_argument("--max-steps-multiplier", type=int, default=None)
+    parser.add_argument("--max-steps-multiplier", type=int, default=None, help="Set the VGB maximum Markov-step budget factor directly.")
     parser.add_argument("--output", default=None)
     parser.add_argument("--verifier", default=None)
     return parser.parse_args()
@@ -151,7 +152,7 @@ def base_sample(task_module, harness, example, config):
     final_states, counts = force_complete(harness, [state], [{"prompt": prompt, **generation_cfg}], return_counts=True)
     final_state = final_states[0]
     text = task_module.decode_state(final_state, harness)
-    count = max(1, int(counts[0])) if counts else _base_nfe(generation_cfg)
+    count = int(counts[0]) if counts else 0
     return text, final_state, {"nfe": count, "forward": count, "backward": 0, "forced": 0}
 
 
@@ -181,6 +182,25 @@ def run_base(task_module, harness, examples, config, rank=0):
             stats = _base_stats(generation_cfg)
             for example, text in zip(batch, outputs):
                 rows.append(build_row(task_module, example, harness, text, None, dict(stats)))
+        return rows
+
+    if hasattr(task_module, "initial_state") and (state_rollout or not hasattr(harness, "generate")):
+        rows = []
+        starts = range(0, len(examples), batch_size)
+        iterator = tqdm(starts, desc="Base inference", total=(len(examples) + batch_size - 1) // batch_size) if rank == 0 else starts
+        for start in iterator:
+            batch = examples[start:start + batch_size]
+            states = [task_module.initial_state(example, harness) for example in batch]
+            configs = []
+            for example in batch:
+                prompt = task_module.make_prompt(example)
+                configs.append({"prompt": prompt, **generation_cfg})
+            final_states, counts = force_complete(harness, states, configs, return_counts=True)
+            for example, state, count in zip(batch, final_states, counts):
+                text = task_module.decode_state(state, harness)
+                count = int(count)
+                stats = {"nfe": count, "forward": count, "backward": 0, "forced": 0}
+                rows.append(build_row(task_module, example, harness, text, state, stats))
         return rows
 
     rows = []
@@ -375,15 +395,14 @@ def main():
     if args.count is not None:
         config.setdefault("data", {})["count"] = int(args.count)
     value_guidance_cfg = value_guidance_section(config)
-    if args.N is not None:
-        if args.algorithm == "BoN":
-            config.setdefault("algorithms", {}).setdefault("BoN", {})["N"] = int(args.N)
-        else:
-            value_guidance_cfg["N"] = int(args.N)
+    apply_budget_overrides(
+        config,
+        args.algorithm,
+        n=args.N,
+        max_steps_multiplier=args.max_steps_multiplier,
+    )
     if args.K is not None:
         value_guidance_cfg["K"] = args.K if str(args.K).lower() == "all" else int(args.K)
-    if args.max_steps_multiplier is not None:
-        value_guidance_cfg["max_steps_multiplier"] = int(args.max_steps_multiplier)
     if args.output is not None:
         config["output"] = args.output
     if args.verifier is not None:

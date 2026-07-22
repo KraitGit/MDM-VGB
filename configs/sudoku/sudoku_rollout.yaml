@@ -5,6 +5,3 @@ output: outputs/sudoku/base_rollout.pt
 
 data:
   split: train
-
-generation:
-  state_rollout: true
